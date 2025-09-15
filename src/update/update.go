@@ -424,10 +424,13 @@ func filterArgs(forceUpdate bool, args []string) []string {
 // shouldDownloadFullDist returns true if for that version of Please we need to download the tar
 // with please and it's tools
 func shouldDownloadFullDist(version cli.Version) bool {
-	downloadToolsVersion := semver.Version{
-		Major:      16,
-		Minor:      0,
-		PreRelease: "0", // Less than any valid prerelease string, e.g. alpha1
+	v16_0_0 := semver.Version{Major: 16, Minor: 0, PreRelease: "0"} // Less than any valid prerelease string, e.g. alpha1
+	v17_18_0 := semver.Version{Major: 17, Minor: 18, PreRelease: "0"}
+	switch {
+	case version.LessThan(v16_0_0):
+		return true
+	case version.LessThan(v17_18_0):
+		return false
 	}
-	return version.LessThan(downloadToolsVersion)
+	return true
 }
